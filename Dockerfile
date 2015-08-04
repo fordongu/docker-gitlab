@@ -31,7 +31,11 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
  && dpkg-reconfigure locales \
+ && gem sources --remove https://rubygems.org/ \
+ && gem sources --remove http://rubygems.org/ \
+ && gem sources -a https://ruby.taobao.org/ \
  && gem install --no-document bundler \
+ && bundle config mirror.https://rubygems.org https://ruby.taobao.org \
  && rm -rf /var/lib/apt/lists/*
 
 COPY assets/setup/ ${SETUP_DIR}/

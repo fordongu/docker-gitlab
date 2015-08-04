@@ -46,7 +46,7 @@ sudo -u git -H ./bin/install
 
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
-sudo -HEu ${GITLAB_USER} git clone -q -b v${GITLAB_VERSION} --depth 1 \
+sudo -HEu ${GITLAB_USER} git clone -q -b ${GITLAB_VERSION} --depth 1 \
   https://gitcafe.com/larryli/gitlab.git ${GITLAB_INSTALL_DIR}
 
 cd ${GITLAB_INSTALL_DIR}
@@ -88,6 +88,8 @@ rm -rf .secret
 sudo -HEu ${GITLAB_USER} ln -sf ${GITLAB_DATA_DIR}/.secret
 
 # install gems required by gitlab, use local cache if available
+echo "install gems required by gitlab, use taobao mirror"
+sudo -HEu ${GITLAB_USER} bundle config mirror.https://rubygems.org https://ruby.taobao.org
 if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} vendor/
   chown -R ${GITLAB_USER}:${GITLAB_USER} vendor/cache
