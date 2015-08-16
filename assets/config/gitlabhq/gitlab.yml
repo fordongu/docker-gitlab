@@ -60,8 +60,8 @@ production: &base
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
-    # default_can_create_group: false  # default: true
-    # username_changing_enabled: false # default: true - User can change her username/namespace
+    default_can_create_group: {{GITLAB_CREATE_GROUP}}     # default: true
+    username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change her username/namespace
     ## Default theme ID
     ##   1 - Graphite
     ##   2 - Charcoal
@@ -128,7 +128,7 @@ production: &base
         # for instance if you find out it is too large to fit on the web page.
         #
         # Example: 'Paris' or 'Acme, Ltd.'
-        label: 'LDAP'
+        label: "{{LDAP_LABEL}}"
 
         host: "{{LDAP_HOST}}"
         port: {{LDAP_PORT}}

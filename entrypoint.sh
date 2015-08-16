@@ -84,6 +84,9 @@ SMTP_PASS=${SMTP_PASS:-}
 SMTP_OPENSSL_VERIFY_MODE=${SMTP_OPENSSL_VERIFY_MODE:-none}
 SMTP_STARTTLS=${SMTP_STARTTLS:-true}
 SMTP_TLS=${SMTP_TLS:-false}
+SMTP_CA_ENABLED=${SMTP_CA_ENABLED:-false}
+SMTP_CA_PATH=${SMTP_CA_PATH:-$GITLAB_DATA_DIR/certs}
+SMTP_CA_FILE=${SMTP_CA_FILE:-$GITLAB_DATA_DIR/certs/ca.crt}
 if [[ -n ${SMTP_USER} ]]; then
   SMTP_ENABLED=${SMTP_ENABLED:-true}
   SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-login}
@@ -103,6 +106,7 @@ LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN=${LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN:-}
 LDAP_BLOCK_AUTO_CREATED_USERS=${LDAP_BLOCK_AUTO_CREATED_USERS:-false}
 LDAP_BASE=${LDAP_BASE:-}
 LDAP_USER_FILTER=${LDAP_USER_FILTER:-}
+LDAP_LABEL=${LDAP_LABEL:-LDAP}
 
 GITLAB_HTTPS_HSTS_ENABLED=${GITLAB_HTTPS_HSTS_ENABLED:-true}
 GITLAB_HTTPS_HSTS_MAXAGE=${GITLAB_HTTPS_HSTS_MAXAGE:-31536000}
@@ -278,6 +282,10 @@ if [[ ! -e ${GITLAB_DATA_DIR}/ssh/ssh_host_rsa_key ]]; then
   mkdir -p ${GITLAB_DATA_DIR}/ssh/
   mv /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub ${GITLAB_DATA_DIR}/ssh/
 fi
+
+## fix permissions of ssh key files
+chmod 0600 ${GITLAB_DATA_DIR}/ssh/*_key
+chmod 0644 ${GITLAB_DATA_DIR}/ssh/*.pub
 chown -R root:root ${GITLAB_DATA_DIR}/ssh
 
 # configure sshd to pick up the host keys from ${GITLAB_DATA_DIR}/ssh/
@@ -481,6 +489,19 @@ if [[ ${SMTP_ENABLED} == true ]]; then
     "") sudo -HEu ${GITLAB_USER} sed '/{{SMTP_AUTHENTICATION}}/d' -i config/initializers/smtp_settings.rb ;;
     *) sudo -HEu ${GITLAB_USER} sed 's/{{SMTP_AUTHENTICATION}}/'"${SMTP_AUTHENTICATION}"'/' -i config/initializers/smtp_settings.rb ;;
   esac
+
+  if [[ ${SMTP_CA_ENABLED} == true ]]; then
+    if [[ -d ${SMTP_CA_PATH} ]]; then
+      sudo -HEu ${GITLAB_USER} sed 's,{{SMTP_CA_PATH}},'"${SMTP_CA_PATH}"',' -i config/initializers/smtp_settings.rb
+    fi
+
+    if [[ -f ${SMTP_CA_FILE} ]]; then
+      sudo -HEu ${GITLAB_USER} sed 's,{{SMTP_CA_FILE}},'"${SMTP_CA_FILE}"',' -i config/initializers/smtp_settings.rb
+    fi
+  else
+    sudo -HEu ${GITLAB_USER} sed '/{{SMTP_CA_PATH}}/d' -i config/initializers/smtp_settings.rb
+    sudo -HEu ${GITLAB_USER} sed '/{{SMTP_CA_FILE}}/d' -i config/initializers/smtp_settings.rb
+  fi
 fi
 
 # apply LDAP configuration
@@ -496,6 +517,7 @@ sudo -HEu ${GITLAB_USER} sed 's/{{LDAP_ALLOW_USERNAME_OR_EMAIL_LOGIN}}/'"${LDAP_
 sudo -HEu ${GITLAB_USER} sed 's/{{LDAP_BLOCK_AUTO_CREATED_USERS}}/'"${LDAP_BLOCK_AUTO_CREATED_USERS}"'/' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's/{{LDAP_BASE}}/'"${LDAP_BASE}"'/' -i config/gitlab.yml
 sudo -HEu ${GITLAB_USER} sed 's/{{LDAP_USER_FILTER}}/'"${LDAP_USER_FILTER}"'/' -i config/gitlab.yml
+sudo -HEu ${GITLAB_USER} sed 's/{{LDAP_LABEL}}/'"${LDAP_LABEL}"'/' -i config/gitlab.yml
 
 # apply aws s3 backup configuration
 case ${AWS_BACKUPS} in
