@@ -1,17 +1,21 @@
-FROM sameersbn/ubuntu:14.04.20150805
+FROM sameersbn/ubuntu:14.04.20151117
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=7-13-zh \
-    GITLAB_SHELL_VERSION=2.6.3 \
+ENV GITLAB_VERSION=8.2.2.zh1 \
+    GITLAB_SHELL_VERSION=2.6.8 \
+    GITLAB_WORKHORSE_VERSION=0.4.2 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
-    SETUP_DIR="/var/cache/gitlab" \
+    GITLAB_CACHE_DIR="/etc/docker-gitlab" \
     RAILS_ENV=production
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
-    GITLAB_DATA_DIR="${GITLAB_HOME}/data"
+    GITLAB_WORKHORSE_INSTALL_DIR="${GITLAB_HOME}/gitlab-workhorse" \
+    GITLAB_DATA_DIR="${GITLAB_HOME}/data" \
+    GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
+    GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
@@ -22,7 +26,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
  && echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
  && apt-get update \
- && apt-get install -y supervisor logrotate locales curl \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate locales curl \
       nginx openssh-server mysql-client postgresql-client redis-tools \
       git-core ruby2.1 python2.7 python-docutils nodejs \
       libmysqlclient18 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
@@ -38,10 +42,10 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && bundle config mirror.https://rubygems.org https://ruby.taobao.org \
  && rm -rf /var/lib/apt/lists/*
 
-COPY assets/setup/ ${SETUP_DIR}/
-RUN bash ${SETUP_DIR}/install.sh
+COPY assets/build/ ${GITLAB_BUILD_DIR}/
+RUN bash ${GITLAB_BUILD_DIR}/install.sh
 
-COPY assets/config/ ${SETUP_DIR}/config/
+COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
