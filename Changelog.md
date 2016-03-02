@@ -2,6 +2,70 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG) for the list of changes in GitLab.
 
+**8.5.1**
+- gitlab: upgrade to CE v8.5.1
+
+**8.5.0**
+- gitlab-workhorse: upgrade to v0.6.4
+- gitlab: upgrade to CE v8.5.0
+- firstrun: expose `GITLAB_ROOT_EMAIL` configuration option
+- expose `OAUTH_AUTO_LINK_SAML_USER` configuration parameter
+
+**8.4.4**
+- gitlab: upgrade to CE v8.4.4
+
+**8.4.3**
+- gitlab: upgrade to CE v8.4.3
+
+**8.4.2**
+- gitlab-workhorse: upgrade to v0.6.2
+- gitlab: upgrade to CE v8.4.2
+
+**8.4.1**
+- gitlab: upgrade to CE v8.4.1
+
+**8.4.0-1**
+- `assets:precompile` moved back to build time
+
+**8.4.0**
+- gitlab-shell: upgrade to v.2.6.10
+- gitlab-workhorse: upgrade to v0.6.1
+- gitlab: upgrade to CE v8.4.0
+- oauth: expose cas3 oauth configuration options
+- oauth: expose azure oauth configuration options
+- `assets:precompile` executed at runtime
+
+**8.3.4**
+- gitlab-workhorse: upgrade to v0.5.4
+- gitlab: upgrade to CE v8.3.4
+- expose `LDAP_TIMEOUT` configuration parameter
+
+**8.3.2**
+- gitlab: upgrade to CE v8.3.2
+
+**8.3.1**
+- gitlab: upgrade to CE v8.3.1
+
+**8.3.0-1**
+- fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.
+
+**8.3.0**
+- `envsubst` is now used for updating the configurations
+- renamed config `CA_CERTIFICATES_PATH` to `SSL_CA_CERTIFICATES_PATH`
+- renamed config `GITLAB_HTTPS_HSTS_ENABLED` to `NGINX_HSTS_ENABLED`
+- renamed config `GITLAB_HTTPS_HSTS_MAXAGE` to `NGINX_HSTS_MAXAGE`
+- renamed config `GITLAB_BACKUPS` to `GITLAB_BACKUP_SCHEDULE`
+- gitlab-workhorse: upgrade to v0.5.1
+- gitlab: upgrade to CE v8.3.0
+- expose `GITLAB_MAX_OBJECT_SIZE` configuration parameter
+- removed `NGINX_MAX_UPLOAD_SIZE` configuration parameter
+- gitlab-shell: upgrade to v.2.6.9
+
+**8.2.3**
+- fixed static asset routing when `GITLAB_RELATIVE_URL_ROOT` is used.
+- added `GITLAB_BACKUP_PG_SCHEMA` configuration parameter
+- gitlab: upgrade to CE v8.2.3
+
 **8.2.2**
 - added `GITLAB_DOWNLOADS_DIR` configuration parameter
 - `DB_TYPE` parameter renamed to `DB_ADAPTER` with `mysql2` and `postgresql` as accepted values

@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: gitlab
-      image: sameersbn/gitlab:8.2.2
+      image: sameersbn/gitlab:8.5.1
       env:
         - name: TZ
           value: Asia/Kolkata
@@ -36,7 +36,7 @@ spec:
         - name: GITLAB_INCOMING_EMAIL_ADDRESS
           value: reply@example.com
 
-        - name: GITLAB_BACKUPS
+        - name: GITLAB_BACKUP_SCHEDULE
           value: daily
         - name: GITLAB_BACKUP_TIME
           value: 01:00
