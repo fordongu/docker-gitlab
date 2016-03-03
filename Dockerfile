@@ -40,7 +40,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && locale-gen en_US.UTF-8 \
  && dpkg-reconfigure locales 
 # 单独把环境这个拿出来
-RUN if [ ${BUILD_IN_CHINA} ]; \
+RUN if [ "${BUILD_IN_CHINA}" == "true" ]; \
     then \
         echo "国内环境：${BUILD_IN_CHINA}。设置国内源。" \
      && gem sources --remove https://rubygems.org/ \

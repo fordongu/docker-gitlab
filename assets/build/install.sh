@@ -5,14 +5,12 @@ GITLAB_CLONE_URL=https://gitlab.com/larryli/gitlab.git
 GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
 GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 
-if [[ ${BUILD_IN_CHINA} ]]; then
+if [[ "${BUILD_IN_CHINA}" == "true" ]]; then
   # 国内
   echo "国内构建，替换仓库地址！"
   GITLAB_CLONE_URL=https://gitcafe.com/khan/gitlab.git
   GITLAB_SHELL_CLONE_URL=https://git.coding.net/khan/gitlab-shell.git
   GITLAB_WORKHORSE_CLONE_URL=https://git.coding.net/khan/gitlab-workhorse.git
-  echo "install gems required by gitlab, use taobao mirror"
-  exec_as_git bundle config mirror.https://rubygems.org https://ruby.taobao.org
 fi
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
@@ -85,6 +83,11 @@ exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_
 cd ${GITLAB_INSTALL_DIR}
 
 # install gems, use local cache if available
+if [[ "${BUILD_IN_CHINA}" == "true" ]]; then
+  # 国内
+  echo "install gems required by gitlab, use taobao mirror"
+  exec_as_git bundle config mirror.https://rubygems.org https://ruby.taobao.org
+fi
 if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
