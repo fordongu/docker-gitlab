@@ -1,9 +1,19 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
+GITLAB_CLONE_URL=https://gitlab.com/larryli/gitlab.git
 GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
 GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
+
+if [[ ${BUILD_IN_CHINA} ]]; then
+  # 国内
+  echo "国内构建，替换仓库地址！"
+  GITLAB_CLONE_URL=https://gitcafe.com/khan/gitlab.git
+  GITLAB_SHELL_CLONE_URL=https://git.coding.net/khan/gitlab-shell.git
+  GITLAB_WORKHORSE_CLONE_URL=https://git.coding.net/khan/gitlab-workhorse.git
+  echo "install gems required by gitlab, use taobao mirror"
+  exec_as_git bundle config mirror.https://rubygems.org https://ruby.taobao.org
+fi
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -66,8 +76,8 @@ cd ${GITLAB_WORKHORSE_INSTALL_DIR}
 make install
 
 # shallow clone gitlab-ce
-echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
+echo "Cloning gitlab-ce ${GITLAB_VERSION}..."
+exec_as_git git clone -q -b ${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
