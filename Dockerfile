@@ -4,7 +4,7 @@ MAINTAINER sameer@damagehead.com
 # 国内构建默认 false
 ARG BUILD_IN_CHINA=false 
 
-ENV GITLAB_VERSION=8-5-zh \
+ENV GITLAB_VERSION=v8.5.2.zh1 \
     GITLAB_SHELL_VERSION=2.6.10 \
     GITLAB_WORKHORSE_VERSION=0.6.4 \
     GITLAB_USER="git" \
