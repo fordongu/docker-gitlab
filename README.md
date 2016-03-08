@@ -2,7 +2,7 @@
 
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
-# khan/gitlab:8.54 (sameersbn/gitlab:8.5.4 翻译版)
+# khan/gitlab:8.5.4 (sameersbn/gitlab:8.5.4 翻译版)
 
 (原英文版 [README](README.en.md))
 
