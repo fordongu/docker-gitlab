@@ -2,34 +2,32 @@
 
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
-# khan/gitlab:8.54 (sameersbn/gitlab:8.5.4 翻译版)
+# sameersbn/gitlab:8.5.4
 
-(原英文版 [README](README.en.md))
-
-- [简介](#简介)
+- [Introduction](#introduction)
     - [Changelog](Changelog.md)
-- [贡献](#贡献)
+- [Contributing](#contributing)
 - [Issues](#issues)
 - [Announcements](https://github.com/sameersbn/docker-gitlab/issues/39)
-- [先决条件](#先决条件)
-- [安装](#安装)
-- [快速开始](#快速开始)
-- [配置](#配置)
-    - [数据存储](#数据存储)
-    - [数据库](#数据库)
-        - [PostgreSQL (推荐)](#postgresql)
-            - [外部 PostgreSQL 服务器](#外部-postgreSQL-服务器)
-            - [链接到 PostgreSQL 容器](#链接到-postgreSQL-容器)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+    - [Data Store](#data-store)
+    - [Database](#database)
+        - [PostgreSQL (Recommended)](#postgresql)
+            - [External PostgreSQL Server](#external-postgresql-server)
+            - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
         - [MySQL](#mysql)
-            - [内部 MySQL 服务器](#内部-mysql-服务器)
-            - [外部 MySQL 服务器](#外部-mysql-服务器)
-            - [链接到 MySQL 容器](#链接到-mysql-容器)
+            - [Internal MySQL Server](#internal-mysql-server)
+            - [External MySQL Server](#external-mysql-server)
+            - [Linking to MySQL Container](#linking-to-mysql-container)
     - [Redis](#redis)
-        - [内部 Redis 服务器](#内部-redis-服务器)
-        - [外部 Redis 服务器](#外部-redis-服务器)
-        - [链接到 Redis 容器](#链接到-redis-容器)
-    - [邮件](#邮件)
-        - [通过邮件回复](#通过邮件回复)
+        - [Internal Redis Server](#internal-redis-server)
+        - [External Redis Server](#external-redis-server)
+        - [Linking to Redis Container](#linking-to-redis-container)
+    - [Mail](#mail)
+        - [Reply by email](#reply-by-email)
     - [SSL](#ssl)
         - [Generation of Self Signed Certificates](#generation-of-self-signed-certificates)
         - [Strengthening the server security](#strengthening-the-server-security)
@@ -53,33 +51,28 @@
     - [External Issue Trackers](#external-issue-trackers)
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
     - [Piwik](#piwik)
-    - [可用的配置参数](#可用的配置参数)
-- [维护](#维护)
-    - [创建备份](#创建备份)
-    - [恢复备份](#恢复备份)
-    - [自动备份](#自动备份)
+    - [Available Configuration Parameters](#available-configuration-parameters)
+- [Maintenance](#maintenance)
+    - [Creating Backups](#creating-backups)
+    - [Restoring Backups](#restoring-backups)
+    - [Automated Backups](#automated-backups)
     - [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
-    - [Rake 任务](#rake-任务)
-    - [导入仓库](#导入仓库)
-    - [升级](#升级)
-    - [Shell 访问](#shell-访问)
-- [参考](#参考)
+    - [Rake Tasks](#rake-tasks)
+    - [Import Repositories](#import-repositories)
+    - [Upgrading](#upgrading)
+    - [Shell Access](#shell-access)
+- [References](#references)
 
-# 简介
+# Introduction
 
-通过 Dockerfile 构建 [GitLab](https://about.gitlab.com/) 容器镜像.
+Dockerfile to build a [GitLab](https://about.gitlab.com/) container image.
 
-译注：此仓库为汉化仓库，做了以下事情
-* 翻译 README （目前部分）
-* 将 gitlab 官方仓库替换为汉化仓库 （感谢 @larryli）
-* 为方便国内网络环境构建，添加国内一些仓库镜像和源配置
+# Contributing
 
-# 贡献
+If you find this image useful here's how you can help:
 
-如果你觉得这个镜像对你有用，你可以通过以下方式进行贡献:
-
-- 通过 Pull Request 提交你的那些炫酷新特性和 bug 修复
-- 通过新人可能会遇到的 [Issues 列表](https://github.com/sameersbn/docker-gitlab/issues) 来帮助他们
+- Send a Pull Request with your awesome new features and bug fixes
+- Help new users with [Issues](https://github.com/sameersbn/docker-gitlab/issues) they may encounter
 - Support the development of this image with a [donation](http://www.damagehead.com/donate/)
 
 # Issues
@@ -107,43 +100,33 @@ In your issue report please make sure you provide the following information:
 - Output of the `docker info` command
 - The `docker run` command you used to run the image (mask out the sensitive bits).
 
-# 先决条件
+# Prerequisites
 
-你的 docker 主机需要至少 1GB 的可用 RAM 来运行 GitLab。 详情请参照 [硬件要求](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md#hardware-requirements) 文档.
+Your docker host needs to have 1GB or more of available RAM to run GitLab. Please refer to the GitLab [hardware requirements](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md#hardware-requirements) documentation for additional information.
 
-# 安装
+# Installation
 
-该镜像的自动构建在 [Dockerhub](https://hub.docker.com/r/sameersbn/gitlab) ，而且这是推荐的安装方式。
+Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/sameersbn/gitlab) and is the recommended method of installation.
 
-（ps:本仓库的汉化版本在 [Dockerhub/khan/gitlab](https://hub.docker.com//r/khan/gitlab) ,
-     国内的在 [阿里云](http://dev.aliyun.com/detail.html?spm=5176.1972343.2.16.UOS7nw&repoId=2921),可通过 `docker pull registry.aliyuncs.com/khan/gitlab-zh` 下载。
-
-
-> **注意**: 构建的镜像在 [Quay.io](https://quay.io/repository/sameersbn/gitlab) 也有
+> **Note**: Builds are also available on [Quay.io](https://quay.io/repository/sameersbn/gitlab)
 
 ```bash
 docker pull sameersbn/gitlab:8.5.4
 ```
-汉化版：
-```bash
-docker pull registry.aliyuncs.com/khan/gitlab-zh:8.5.4
-```
 
-你也可以拉取 `latest` 标签，这是仓库里面 *HEAD* 的构建
+You can also pull the `latest` tag which is built from the repository *HEAD*
 
 ```bash
 docker pull sameersbn/gitlab:latest
 ```
 
-或者，你可以在本地构建镜像
+Alternatively you can build the image locally.
 
 ```bash
-docker build -t khan/gitlab --build-arg BUILD_IN_CHINA=true .
+docker build -t sameersbn/gitlab github.com/sameersbn/docker-gitlab
 ```
-这是本仓库在国内构建的方式，需要通过构建参数 BUILD_IN_CHINA=true 将仓库和源地址替换为国内的镜像。
-`--build-arg` 需要 docker 1.9 以上版本支持。
 
-# 快速开始
+# Quick Start
 
 The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/).
 
