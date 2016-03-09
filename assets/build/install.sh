@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/larryli/gitlab.git
+GITLAB_CLONE_URL=https://gitlab.com/clarkhan/gitlab.git
 GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
 GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 
 if [[ "${BUILD_IN_CHINA}" == "true" ]]; then
   # 国内
   echo "国内构建，替换仓库地址！"
-  GITLAB_CLONE_URL=https://gitcafe.com/khan/gitlab.git
+  GITLAB_CLONE_URL=https://git.coding.net/khan/gitlab.git
   GITLAB_SHELL_CLONE_URL=https://git.coding.net/khan/gitlab-shell.git
   GITLAB_WORKHORSE_CLONE_URL=https://git.coding.net/khan/gitlab-workhorse.git
 fi

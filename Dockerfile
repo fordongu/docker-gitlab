@@ -1,10 +1,10 @@
-FROM sameersbn/ubuntu:14.04.20160218
+FROM sameersbn/ubuntu:14.04.20160308
 MAINTAINER sameer@damagehead.com
 
 # 国内构建默认 false
 ARG BUILD_IN_CHINA=false 
 
-ENV GITLAB_VERSION=v8.5.3.zh1 \
+ENV GITLAB_VERSION=v8.5.4.zh1 \
     GITLAB_SHELL_VERSION=2.6.10 \
     GITLAB_WORKHORSE_VERSION=0.6.4 \
     GITLAB_USER="git" \
